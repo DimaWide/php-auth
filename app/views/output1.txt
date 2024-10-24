@@ -1,0 +1,208 @@
+home.php
+<!-- /app/views/login.php -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Вход</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Вход</h2>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        <form action="/login" method="POST">
+            <label for="email">Электронная почта</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="password">Пароль</label>
+            <input type="password" name="password" id="password" required>
+
+            <button type="submit">Войти</button>
+        </form>
+        <p>Нет аккаунта? <a href="/register">Создайте его</a></p>
+        <p><a href="/reset-request">Забыли пароль?</a></p>
+    </div>
+</body>
+</html>
+-----
+login.php
+<!-- /app/views/login.php -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Вход</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Вход</h2>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        <form action="/login" method="POST">
+            <label for="email">Электронная почта</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="password">Пароль</label>
+            <input type="password" name="password" id="password" required>
+
+            <button type="submit">Войти</button>
+        </form>
+        <p>Нет аккаунта? <a href="/register">Создайте его</a></p>
+        <p><a href="/reset-request">Забыли пароль?</a></p>
+    </div>
+</body>
+</html>
+-----
+profile.php
+<!-- /app/views/profile.php -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Профиль пользователя</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Профиль пользователя</h2>
+        <?php if (isset($success)): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <form action="/profile" method="POST">
+            <label for="username">Имя пользователя</label>
+            <input type="text" name="username" id="username" value="<?= htmlspecialchars($user['username']) ?>" required>
+
+            <label for="email">Электронная почта</label>
+            <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email']) ?>" required>
+
+            <label for="password">Новый пароль (оставьте пустым, если не хотите менять)</label>
+            <input type="password" name="password" id="password">
+
+            <label for="confirm_password">Подтверждение пароля</label>
+            <input type="password" name="confirm_password" id="confirm_password">
+
+            <button type="submit">Сохранить изменения</button>
+        </form>
+        <a href="/logout">Выйти</a>
+    </div>
+</body>
+</html>
+-----
+register.php
+<!-- /app/views/register.php -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Регистрация</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Регистрация</h2>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        <?php if (isset($success)): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <form action="/register" method="POST">
+            <label for="username">Имя пользователя</label>
+            <input type="text" name="username" id="username" required>
+
+            <label for="email">Электронная почта</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="password">Пароль</label>
+            <input type="password" name="password" id="password" required>
+
+            <label for="confirm_password">Подтверждение пароля</label>
+            <input type="password" name="confirm_password" id="confirm_password" required>
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <p>Уже есть аккаунт? <a href="/login">Войдите</a></p>
+    </div>
+</body>
+</html>
+-----
+reset_password.php
+<!-- /app/views/reset_password.php -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Сброс пароля</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Сброс пароля</h2>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        <?php if (isset($success)): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <form action="/reset-password" method="POST">
+            <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
+
+            <label for="password">Новый пароль</label>
+            <input type="password" name="password" id="password" required>
+
+            <label for="confirm_password">Подтверждение пароля</label>
+            <input type="password" name="confirm_password" id="confirm_password" required>
+
+            <button type="submit">Сбросить пароль</button>
+        </form>
+        <p><a href="/login">Вернуться к входу</a></p>
+    </div>
+</body>
+</html>
+-----
+reset_request.php
+<!-- /app/views/reset_request.php -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Сброс пароля</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Восстановление пароля</h2>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        <?php if (isset($success)): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <form action="/reset-request" method="POST">
+            <label for="email">Электронная почта</label>
+            <input type="email" name="email" id="email" required>
+
+            <button type="submit">Отправить ссылку для восстановления пароля</button>
+        </form>
+        <p><a href="/login">Вернуться к входу</a></p>
+    </div>
+</body>
+</html>
+-----

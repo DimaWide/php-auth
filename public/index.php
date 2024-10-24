@@ -1,43 +1,48 @@
 <?php
 // /public/index.php
-
+ini_set('error_reporting', 0);
+error_reporting(0);
+error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING); 
 require_once __DIR__ . '/../app/init.php';
 
-use AltoRouter; // Указываем полное пространство имен для AltoRouter
+use App\Router;
 use App\Controllers\AuthController;
+use App\Controllers\PageController;
 
 // Инициализация маршрутизатора
-$router = new AltoRouter();
+$router = new Router();
 $authController = new AuthController();
-
-$router->setBasePath('/');
+$pageController = new PageController();
 
 // Определение маршрутов
-$router->map('GET', '/register', 'AuthController@showRegisterForm');
-$router->map('POST', '/register', 'AuthController@register');
-$router->map('GET', '/login', 'AuthController@showLoginForm');
-$router->map('POST', '/login', 'AuthController@login');
-$router->map('GET', '/reset-request', 'AuthController@showResetRequestForm');
-$router->map('POST', '/reset-request', 'AuthController@resetRequest');
-$router->map('GET', '/reset-password', 'AuthController@showResetPasswordForm');
-$router->map('POST', '/reset-password', 'AuthController@resetPassword');
-$router->map('GET', '/profile', 'AuthController@showProfile');
-$router->map('POST', '/profile', 'AuthController@updateProfile');
-$router->map('GET', '/logout', 'AuthController@logout');
+$router->map('GET', '/', [$pageController, 'index']);
+$router->map('GET', '/register', [$authController, 'showRegisterForm']);
+$router->map('POST', '/register', [$authController, 'register']);
+$router->map('GET', '/login', [$authController, 'showLoginForm']);
+$router->map('POST', '/login', [$authController, 'login']);
+$router->map('GET', '/reset-request', [$authController, 'showResetRequestForm']);
+$router->map('POST', '/reset-request', [$authController, 'resetRequest']);
+$router->map('GET', '/reset-password', [$authController, 'showResetPasswordForm']);
+$router->map('POST', '/reset-password', [$authController, 'resetPassword']);
+$router->map('GET', '/profile', [$authController, 'showProfile']);
+$router->map('POST', '/profile', [$authController, 'updateProfile']);
+$router->map('GET', '/logout', [$authController, 'logout']);
 
 // Получаем текущий URL
-$match = $router->match();
+$requestMethod = $_SERVER['REQUEST_METHOD'];
+$requestUri = strtok($_SERVER['REQUEST_URI'], '?'); // Убираем GET параметры
 
-if ($match) {
-    list($controllerName, $method) = explode('@', $match['target']);
+$handler = $router->match($requestMethod, $requestUri);
+
+if ($handler) {
+    list($controller, $method) = $handler;
     
     // Проверка существования контроллера
-    if (class_exists($controllerName)) {
-        $controllerClass = new $controllerName($pdo);
-        call_user_func([$controllerClass, $method]);
+    if (is_object($controller) && method_exists($controller, $method)) {
+        call_user_func([$controller, $method]);
     } else {
         header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
-        echo '404 Not Found: Controller not found';
+        echo '404 Not Found: Controller method not found';
     }
 } else {
     header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');

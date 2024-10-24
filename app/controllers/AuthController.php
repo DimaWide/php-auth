@@ -3,6 +3,7 @@
 
 namespace App\Controllers;
 
+use App\Database;
 use App\Models\User;     // Импортируем класс User
 use App\Models\Session;  // Импортируем класс Session
 
@@ -10,7 +11,8 @@ class AuthController {
     private $userModel;
     private $session;
 
-    public function __construct($pdo) {
+    public function __construct() {
+        $pdo = Database::getInstance();
         $this->userModel = new User($pdo);
         $this->session = new Session();
         $this->session->start();
@@ -32,7 +34,7 @@ class AuthController {
             include __DIR__ . '/../views/register.php';
             return;
         }
-        
+
         if (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $username)) {
             $error = "Неверный формат имени пользователя.";
             include __DIR__ . '/../views/register.php';
@@ -72,7 +74,7 @@ class AuthController {
         $password = $_POST['password'];
 
         $user = $this->userModel->findByEmail($email);
-        
+
         if ($user && password_verify($password, $user['password'])) {
             $this->session->set('user_id', $user['id']);
             header("Location: /profile");
@@ -90,7 +92,7 @@ class AuthController {
     public function resetRequest() {
         $email = $_POST['email'];
         $user = $this->userModel->findByEmail($email);
-        
+
         if ($user) {
             $token = bin2hex(random_bytes(16));
             $this->userModel->storeToken($user['id'], $token);
@@ -99,7 +101,7 @@ class AuthController {
         } else {
             $error = "Электронная почта не найдена.";
         }
-        
+
         include __DIR__ . '/../views/reset_request.php';
     }
 
@@ -139,7 +141,7 @@ class AuthController {
             header("Location: /login");
             exit();
         }
-        
+
         $user = $this->userModel->findById($userId);
         include __DIR__ . '/../views/profile.php';
     }

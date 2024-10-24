@@ -8,17 +8,30 @@ use PDOException;
 
 class Database {
     private static $instance = null; // Хранит единственный экземпляр
+    private static $config = null;   // Хранит конфигурацию
     private $pdo;
 
     // Закрываем конструктор, чтобы предотвратить создание экземпляров извне
-    private function __construct($config) {
-        $this->connect($config);
+    private function __construct() {
+        // Используем сохранённую конфигурацию для подключения
+        $this->connect(self::$config);
+    }
+
+    // Метод для задания конфигурации
+    public static function setConfig($config) {
+        if (self::$config === null) {
+            self::$config = $config;
+        }
     }
 
     // Метод для получения экземпляра
-    public static function getInstance($config) {
+    public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new Database($config);
+            // Если конфигурация не установлена, выдаём ошибку
+            if (self::$config === null) {
+                throw new \Exception("Конфигурация базы данных не установлена.");
+            }
+            self::$instance = new Database();
         }
         return self::$instance->getConnection(); // Возвращаем объект PDO
     }
